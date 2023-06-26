@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 def blog_list(request):
-    return HttpResponse("Blog List")
+    return render(request, 'index.html')
 
 def blog(request):
     return HttpResponse("Blog")
