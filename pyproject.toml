@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 Django = "^4.2.2"
+turbo-django = "^0.3.0"
+channels-redis = "^3.4.0"
 
 
 [build-system]
