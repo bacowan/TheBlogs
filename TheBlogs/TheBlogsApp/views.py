@@ -9,7 +9,7 @@ def blog_list(request):
     return render(request, 'clean_blog/index.html', context)
 
 def login(request):
-    return HttpResponse("Login")
+    return render(request, 'login/index.html')
 
 def signup(request):
     return HttpResponse("Signup")
