@@ -94,18 +94,23 @@ html {
     position: relative;
   }
   
-  .label {
+  label {
     font-size: 0.9rem;
     line-height: 1.5;
   }
   
-  .input {
+  input, textarea {
     padding: 0.5em 0 0.5em 1em;
     width: 100%;
     border: 1px solid #e5e7ec;
     border-radius: 5px;
     outline: 0;
     box-sizing: border-box;
+    resize: none;
+  }
+
+  .form-error {
+    color: red;
   }
   
   .btn-submit {

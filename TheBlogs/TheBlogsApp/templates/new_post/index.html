@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="robots" content="follow,index" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login</title>
+    <title>Shopify by Meg Login Template | Login Page CSS</title>
 
     <meta name="msapplication-TileColor" content="#6371C5" />
     <meta name="theme-color" content="#6371C5" />
@@ -21,30 +21,20 @@
 
   <body>
     <div class="content-body">
-      <div class="form-wrapper">
+      <div>
         <form class="bg-white" method="POST">
           {% csrf_token %}
-          {% for field in user_form %}
+          {% for field in post_form %}
           <div class="field-group">
             {{ field.label_tag }}
             {{ field }}
           </div>
           {% endfor %}
-          
-          {% if user_form.non_field_errors %}
-          {% for err in user_form.non_field_errors %}
-            <p class="form-error">{{ err }}</p>
-          {% endfor %}
-          {% endif %}
-          
+
           <div class="field-group">
-            <input class="btn-submit" type="submit" value="Log In" />
+            <input class="btn-submit" type="submit" value="Post" />
           </div>
         </form>
-
-        <div class="bg-grey">
-          <a href="/signup" class="link-register">Sign Up</a>
-        </div>
       </div>
     </div>
   </body>
