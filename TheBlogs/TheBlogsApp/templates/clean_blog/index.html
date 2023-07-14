@@ -1,4 +1,5 @@
 {% load static %}
+{% include "turbo/head.html" %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -43,6 +44,9 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
+                        <turbo-frame id=myframe>
+                            <a href="/test-update">CLICK</a>
+                        </turbo-frame>
                         {% if is_signed_in %}
                         <a href="logout">{{ username }}<br/>Log Out</a>
                         {% else %}

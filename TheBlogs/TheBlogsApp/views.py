@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django import forms
 from django.core.exceptions import ValidationError
+from turbo.shortcuts import render_frame_string
 from datetime import date
 from .models import BlogPost
 from .config import blogs_per_page
@@ -82,3 +83,6 @@ def new_post(request):
         'post_form': form
     }
     return render(request, 'new_post/index.html', context)
+
+def test_update(request):
+    return render_frame_string("CLICKED!").update(id="myframe").response 
