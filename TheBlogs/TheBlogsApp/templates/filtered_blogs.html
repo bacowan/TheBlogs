@@ -1,0 +1,17 @@
+<turbo-frame id="postsframe">
+    {% for b in blogs %}
+    <div class="post-preview">
+        <h2 class="post-title">
+            {{ b.title }}
+        </h2>
+        <p class="post-meta">Posted by {{ b.author }} on {{ b.creation_date }}</p>
+        {{ b.text }}
+    </div>
+    <hr>
+    {% endfor %}
+    <ul class="pager">
+        <li class="next">
+            <a href="#">Older Posts &rarr;</a>
+        </li>
+    </ul>
+</turbo-frame>
