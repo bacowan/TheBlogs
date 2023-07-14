@@ -44,9 +44,6 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <turbo-frame id=myframe>
-                            <a href="/test-update">CLICK</a>
-                        </turbo-frame>
                         {% if is_signed_in %}
                         <a href="logout">{{ username }}<br/>Log Out</a>
                         {% else %}
@@ -80,22 +77,9 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                {% for b in blogs %}
-                <div class="post-preview">
-                    <h2 class="post-title">
-                        {{ b.title }}
-                    </h2>
-                    <p class="post-meta">Posted by {{ b.author }} on {{ b.creation_date }}</p>
-                    {{ b.text }}
-                </div>
-                <hr>
-                {% endfor %}
-                <!-- Pager -->
-                <ul class="pager">
-                    <li class="next">
-                        <a href="#">Older Posts &rarr;</a>
-                    </li>
-                </ul>
+                <turbo-frame id=postsframe src="/filtered-blogs">
+                    
+                </turbo-frame>
                 {% if is_signed_in %}
                 <ul class="pager">
                     <li>

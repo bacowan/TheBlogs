@@ -3,16 +3,14 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 from django import forms
 from django.core.exceptions import ValidationError
-from turbo.shortcuts import render_frame_string
+from turbo.shortcuts import render_frame_string, render_frame
 from datetime import date
 from .models import BlogPost
 from .config import blogs_per_page
 from .forms import SigninForm, NewBlogPostForm, SignupForm
 
 def blog_list(request):
-    blogs = BlogPost.objects.order_by('-creation_date')[:blogs_per_page]
     context = {
-        'blogs': blogs,
         'is_signed_in': request.user.is_authenticated,
         'username': request.user.username
     }
@@ -84,5 +82,9 @@ def new_post(request):
     }
     return render(request, 'new_post/index.html', context)
 
-def test_update(request):
-    return render_frame_string("CLICKED!").update(id="myframe").response 
+def filtered_blogs(request):
+    blogs = BlogPost.objects.order_by('-creation_date')[:blogs_per_page]
+    context = {
+        'blogs': blogs
+    }
+    return render(request, 'filtered_blogs.html', context)
