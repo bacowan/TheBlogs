@@ -10,8 +10,15 @@
     <hr>
     {% endfor %}
     <ul class="pager">
-        <li class="next">
-            <a href="/filtered-blogs">Older Posts &rarr;</a>
+        {% if are_newer_pages %}
+        <li class="previous">
+            <a href="/filtered-blogs?page={{ page|add:"-1" }}">&larr; Newer Posts</a>
         </li>
+        {% endif %}
+        {% if are_older_pages %}
+        <li class="next">
+            <a href="/filtered-blogs?page={{ page|add:1 }}">Older Posts &rarr;</a>
+        </li>
+        {% endif %}
     </ul>
 </turbo-frame>

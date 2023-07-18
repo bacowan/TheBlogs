@@ -83,8 +83,12 @@ def new_post(request):
     return render(request, 'new_post/index.html', context)
 
 def filtered_blogs(request):
-    blogs = BlogPost.objects.order_by('-creation_date')[:blogs_per_page]
+    page = int(request.GET.get("page", 0))
+    blogs = BlogPost.objects.order_by('-creation_date')[page*blogs_per_page:(page+1)*blogs_per_page]
     context = {
-        'blogs': blogs
+        'page': page,
+        'blogs': blogs,
+        'are_newer_pages': page > 0,
+        'are_older_pages': BlogPost.objects.count() > (page+1)*blogs_per_page
     }
     return render(request, 'filtered_blogs.html', context)
