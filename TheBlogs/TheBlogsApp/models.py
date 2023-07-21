@@ -7,7 +7,8 @@ class BlogPost(models.Model):
     creation_date = models.DateTimeField()
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
+        on_delete=models.CASCADE,
+        related_name='blog_posts'
     )
 
     def __str__(self):

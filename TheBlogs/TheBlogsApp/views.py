@@ -10,9 +10,17 @@ from .config import blogs_per_page
 from .forms import SigninForm, NewBlogPostForm, SignupForm
 
 def blog_list(request):
+    author = int(request.POST.get("author", -1))
+    date = request.POST.get("date", "")
+    title = request.POST.get("title", "")
+    # TODO: the actual filter
     context = {
         'is_signed_in': request.user.is_authenticated,
-        'username': request.user.username
+        'username': request.user.username,
+        'authors': filter(lambda user : user.blog_posts.exists(), User.objects.all()),
+        'selected_author': author,
+        'selected_date': date,
+        'selected_title': title
     }
     return render(request, 'clean_blog/index.html', context)
 
