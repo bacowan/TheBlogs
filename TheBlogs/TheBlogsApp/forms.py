@@ -1,5 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import User
 
 class SigninForm(forms.Form):
     username = forms.CharField(label="Username", max_length=20, widget=forms.TextInput(attrs={"placeholder": "username"}))
@@ -22,3 +23,18 @@ class SignupForm(forms.Form):
 class NewBlogPostForm(forms.Form):
     title = forms.CharField(label="Title", max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Title'}))
     text = forms.CharField(label="Text", widget=forms.Textarea(attrs={"rows":"15", "placeholder": "Input your blog post"}))
+
+class FilterForm(forms.Form):
+    author = forms.ChoiceField(
+            choices=[(-1, "")] + list(map(lambda user: (user.id, user.username), filter(lambda user : user.blog_posts.exists(), User.objects.all()))),
+            label="Author",
+            required=False)
+    date = forms.DateField(label="Date", required=False, widget=forms.SelectDateWidget())
+    title = forms.CharField(label="Title", required=False)
+    
+
+    def __init__(self, *args, **kwargs):
+        super(FilterForm, self).__init__(*args, **kwargs)
+        self.fields["author"].widget.attrs["onchange"] = "form.requestSubmit();"
+        self.fields["date"].widget.attrs["onchange"] = "form.requestSubmit();"
+        self.fields["title"].widget.attrs["onchange"] = "form.requestSubmit();"

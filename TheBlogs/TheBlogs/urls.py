@@ -26,5 +26,6 @@ urlpatterns = [
     path('logout/', views.logout),
     path('signup/', views.signup),
     path('new-post/', views.new_post),
-    path("filtered-blogs/", views.filtered_blogs)
+    path("filtered-blogs/", views.filtered_blogs),
+    path("perform-filter-blogs/", views.perform_filter_blogs)
 ]

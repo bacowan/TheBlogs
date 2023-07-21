@@ -1,5 +1,7 @@
 {% load static %}
 {% include "turbo/head.html" %}
+{% load turbo_streams %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +26,8 @@
     <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
 
-
+    {% include "turbo/head.html" %}
+    {% turbo_subscribe 'TheBlogsApp:AppStream' %}
 </head>
 
 <body>
@@ -76,37 +79,22 @@
     <!-- Main Content -->
     <div class="container">
         <turbo-frame id="blog-filter">
-            <form method="POST">
+            <form method="POST" action="/perform-filter-blogs/">
                 {% csrf_token %}
                 <h3 class="text-center">Filters</h3>
                 <div class="row">
+                    {% for field in filter_form %}
                     <div class="col-sm-4">
-                        <label for="Author">Author:</label>
-                        <select name="author" id="Author">
-                            <option></option>
-                            {% for author in authors %}
-                            <option value="{{ author.id }}"
-                                {% if selected_author == author.id %}
-                                selected
-                                {% endif %}
-                                >{{ author.username }}</option>
-                            {% endfor %}
-                        </select>
+                      {{ field.label_tag }}
+                      {{ field }}
                     </div>
-                    <div class="col-sm-4">
-                        <label for="Date">Creation Date:</label>
-                        <input name="date" type="date" id="Date" value="{{ selected_date }}"/>
-                    </div>
-                    <div class="col-sm-4">
-                        <label for="Title">Title:</label>
-                        <input name="title" id="Title" value="{{ selected_title }}"/>
-                    </div>
+                    {% endfor %}
                 </div>
-                <div class="row">
+                <!--<div class="row">
                     <div class="col text-center">
                         <input type="submit" value="Apply"/>
                     </div>
-                </div>
+                </div>-->
             </form>
         </turbo-frame>
         <hr>
