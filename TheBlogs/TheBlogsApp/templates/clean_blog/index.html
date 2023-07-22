@@ -54,6 +54,11 @@
                         {% endif %}
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-left">
+                    <a href="/">
+                        <i data-feather="home" style="stroke:white"></i>
+                    </a>
+                </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -121,6 +126,11 @@
 
     <!-- Theme JavaScript -->
     <script src="{% static 'clean_blog/js/clean-blog.min.js' %}"></script>
+
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script>
+        feather.replace();
+    </script>
 
 </body>
 

@@ -55,6 +55,11 @@
                         {% endif %}
                     </li>
                 </ul>
+                <ul class="nav navbar-nav navbar-left">
+                    <a href="/">
+                        <i data-feather="home" style="stroke:white"></i>
+                    </a>
+                </ul>
             </div>
             <!-- /.navbar-collapse -->
         </div>
@@ -79,13 +84,12 @@
 
     <!-- Main Content -->
 
-    <!--<div class="post-preview">-->
     <div style="padding:0.5em">
         <div class="container">
             <div class="row">
                 <h2 class="post-title">
                     {% if is_user_author %}
-                    <form action="/delete-blog-post" method="POST">
+                    <form action="/delete-blog-post/" method="POST">
                         {% csrf_token %}
                         {{ delete_post_form }}
                         <i data-feather="trash-2" style="stroke:red; cursor:pointer" onclick="parentNode.submit();"></i>

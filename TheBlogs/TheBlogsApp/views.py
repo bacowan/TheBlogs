@@ -32,9 +32,6 @@ def blog(request, id):
                 )
                 comment.save()
                 AppStream().update("comments.html", get_comments_context(blog, 0, request), id="commentsframe")
-        elif request.method == "DELETE":
-            blog.delete()
-            return redirect('blog_list')
         else:
             form = CommentForm()
         context = {
@@ -48,7 +45,6 @@ def blog(request, id):
         return render(request, 'single_post/index.html', context)
     else:
         return HttpResponse(f"Could not find blog post with ID {id}")
-        # TODO: return 404
 
 def comments(request, id):
     blog = BlogPost.objects.get(pk=id)
@@ -57,18 +53,17 @@ def comments(request, id):
         return render(request, 'comments.html', get_comments_context(blog, page, request))
     else:
         return HttpResponse(f"Could not find blog post with ID {id}")
-        # TODO: return 404
 
 def get_comments_context(blog, page, request):
     comments = blog.comments.order_by('-creation_date')[page*comments_per_page:(page+1)*comments_per_page]
     return {
         'blog': blog,
         'page': page,
-        'comments': map(lambda comment: {
+        'comments': list(map(lambda comment: {
             'comment': comment,
             'form': DeleteCommentForm(initial={'comment_id': comment.id}),
             'is_user_author': request.user.id == comment.author.id,
-        }, comments),
+        }, comments)),
         'are_newer_comments': page > 0,
         'are_older_comments': blog.comments.count() > (page+1)*comments_per_page
     }
@@ -79,7 +74,10 @@ def delete_blog_post(request):
         if form.is_valid():
             try:
                 blog = BlogPost.objects.get(pk=form.cleaned_data['post_id'])
-                blog.delete()
+                if blog.author.id == request.user.id:
+                    blog.delete()
+                else:
+                    return HttpResponse("Unauthorized")
             except:
                 pass
     return redirect('blog_list')
@@ -91,8 +89,11 @@ def delete_comment(request):
             print(form.cleaned_data['comment_id'])
             try:
                 comment = Comment.objects.get(pk=form.cleaned_data['comment_id'])
-                comment.delete()
-                AppStream().update("comments.html", get_comments_context(comment.blog_post, 0, request), id="commentsframe")
+                if comment.author.id == request.user.id:
+                    comment.delete()
+                    AppStream().update("comments.html", get_comments_context(comment.blog_post, 0, request), id="commentsframe")
+                else:
+                    return HttpResponse("Unauthorized")
             except:
                 pass
     return HttpResponse("")
@@ -141,8 +142,7 @@ def signup(request):
 
 def new_post(request):
     if not request.user.is_authenticated:
-        # TODO: show an error page
-        pass
+        return HttpResponse("Please sign in before making a post")
 
     if request.method == "POST":
         form = NewBlogPostForm(request.POST)
@@ -175,10 +175,9 @@ def get_filtered_blog_context(author_id, date, title, page):
 
     if date != None:
         try:
-            date_val = datetime.datetime.strptime(date, '%Y%m%d').date()
+            date_val = datetime.datetime.strptime(date, '%Y%m%d')
             args += "&date=" + date
-            print(date_val)
-            blog_query = blog_query.filter(creation_date=date_val)
+            blog_query = blog_query.filter(creation_date__lt=date_val + datetime.timedelta(days=1)).filter(creation_date__gt=date_val)
         except Exception as e:
             pass
 
