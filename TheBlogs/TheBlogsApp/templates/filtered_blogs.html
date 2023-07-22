@@ -2,11 +2,12 @@
     {% if blogs %}
         {% for b in blogs %}
         <div class="post-preview">
-            <h2 class="post-title">
-                {{ b.title }}
-            </h2>
-            <p class="post-meta">Posted by {{ b.author }} on {{ b.creation_date }}</p>
-            {{ b.text }}
+            <a href="/blog/{{ b.id }}" target="_top">
+                <h2 class="post-title">
+                    {{ b.title }}
+                </h2>
+                <p class="post-meta">Posted by {{ b.author }} on {{ b.creation_date }}</p>
+            </a>
         </div>
         <hr>
         {% endfor %}
@@ -16,7 +17,6 @@
     <ul class="pager">
         {% if are_newer_pages %}
         <li class="previous">
-            <!--<a href="/filtered-blogs?page={{ page|add:"-1" }}&author={{ filter_author }}&title={{ filter_title }}&date={{ filter_date }}">-->
             <a href="/filtered-blogs?{{ previous_args }}">
                 &larr; Newer Posts
             </a>
@@ -24,7 +24,6 @@
         {% endif %}
         {% if are_older_pages %}
         <li class="next">
-            <!--<a href="/filtered-blogs?page={{ page|add:1 }}&author={{ filter_author }}&title={{ filter_title }}&date={{ filter_date }}">-->
             <a href="/filtered-blogs?{{ next_args }}">
                 Older Posts &rarr;
             </a>

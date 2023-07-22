@@ -21,6 +21,7 @@ from TheBlogsApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.blog_list, name='blog_list'),
+    path('blog/<int:id>/', views.blog),
     path('index', views.blog_list),
     path('login/', views.login),
     path('logout/', views.logout),

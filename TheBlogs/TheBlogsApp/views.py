@@ -13,13 +13,23 @@ from .forms import FilterForm, SigninForm, NewBlogPostForm, SignupForm
 from .streams import AppStream
 
 def blog_list(request):
-    # TODO: the actual filter
     context = {
         'is_signed_in': request.user.is_authenticated,
         'username': request.user.username,
         'filter_form': FilterForm()
     }
     return render(request, 'clean_blog/index.html', context)
+
+def blog(request, id):
+    blog = BlogPost.objects.get(pk=id)
+    if blog != None:
+        context = {
+            'blog': blog
+        }
+        return render(request, 'single_post/index.html', context)
+    else:
+        return HttpResponse(f"Could not find blog post with ID {id}")
+        # TODO: return 404
 
 def login(request):
     if request.method == "POST":
@@ -128,7 +138,6 @@ def filtered_blogs(request):
     date = request.GET.get("date", None)
     title = request.GET.get("title", None)
     page = int(request.GET.get("page", 0))
-    print(author_id)
     context = get_filtered_blog_context(
         author_id=author_id,
         date=date,
