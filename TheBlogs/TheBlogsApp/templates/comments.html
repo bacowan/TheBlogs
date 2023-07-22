@@ -1,0 +1,43 @@
+<turbo-frame id="commentsframe">
+    <div style="padding:0.5em">
+        <H1>Comments</H1>
+        {% if comments %}
+            {% for c in comments %}
+                <hr>
+                {% if c.is_user_author %}
+                <form action="/delete-comment/" method="POST">
+                    {% csrf_token %}
+                    {{ c.form }}
+                    <p>
+                        <label>
+                            <i data-feather="trash-2" style="stroke:red; cursor:pointer" onclick="parentNode.parentNode.submit();"></i>
+                            <input type="submit" style="display:none"/>
+                        </label>
+                        <i>{{ c.comment.author.username }}, {{ c.comment.creation_date }}:</i> {{ c.comment.text }}
+                    </p>
+                </form>
+                {% else %}
+                <p><i>{{ c.comment.author.username }}, {{ c.comment.creation_date }}:</i> {{ c.comment.text }}</p>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+        <p>No comments yet</p>
+        {% endif %}
+        <ul class="pager">
+            {% if are_newer_comments %}
+            <li class="previous">
+                <a href="/blog/{{ blog.id }}/comments?page={{ page|add:"-1" }}">
+                    &larr; Newer Comments
+                </a>
+            </li>
+            {% endif %}
+            {% if are_older_comments %}
+            <li class="next">
+                <a href="/blog/{{ blog.id }}/comments?page={{ page|add:1 }}">
+                    Older Comments &rarr;
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</turbo-frame>

@@ -22,7 +22,7 @@ class SignupForm(forms.Form):
 
 class NewBlogPostForm(forms.Form):
     title = forms.CharField(label="Title", max_length=100, widget=forms.TextInput(attrs={'placeholder': 'Title'}))
-    text = forms.CharField(label="Text", widget=forms.Textarea(attrs={"rows":"15", "placeholder": "Input your blog post"}))
+    text = forms.CharField(label="Text", widget=forms.Textarea(attrs={"placeholder": "Input your blog post"}))
 
 class FilterForm(forms.Form):
     author = forms.ChoiceField(
@@ -38,3 +38,12 @@ class FilterForm(forms.Form):
         self.fields["author"].widget.attrs["onchange"] = "form.requestSubmit();"
         self.fields["date"].widget.attrs["onchange"] = "form.requestSubmit();"
         self.fields["title"].widget.attrs["onchange"] = "form.requestSubmit();"
+
+class CommentForm(forms.Form):
+    text = forms.CharField(label="Your Comment", widget=forms.Textarea(attrs={"rows":"5", "placeholder": "Input your comment"}))
+
+class DeletePostForm(forms.Form):
+    post_id = forms.IntegerField(widget=forms.HiddenInput())
+
+class DeleteCommentForm(forms.Form):
+    comment_id = forms.IntegerField(widget=forms.HiddenInput())

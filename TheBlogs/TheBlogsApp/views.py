@@ -5,11 +5,10 @@ from django.contrib.auth import authenticate, login as django_login, logout as d
 from django import forms
 from django.core.exceptions import ValidationError
 from django.http import HttpResponse
-from turbo.shortcuts import render_frame_string, render_frame
 from datetime import date
-from .models import BlogPost
-from .config import blogs_per_page
-from .forms import FilterForm, SigninForm, NewBlogPostForm, SignupForm
+from .models import BlogPost, Comment
+from .config import blogs_per_page, comments_per_page
+from .forms import CommentForm, DeleteCommentForm, DeletePostForm, FilterForm, SigninForm, NewBlogPostForm, SignupForm
 from .streams import AppStream
 
 def blog_list(request):
@@ -23,13 +22,80 @@ def blog_list(request):
 def blog(request, id):
     blog = BlogPost.objects.get(pk=id)
     if blog != None:
+        if request.method == "POST":
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = blog.comments.create(
+                    text=form.cleaned_data['text'],
+                    author=request.user,
+                    creation_date=datetime.datetime.now()
+                )
+                comment.save()
+                AppStream().update("comments.html", get_comments_context(blog, 0, request), id="commentsframe")
+        elif request.method == "DELETE":
+            blog.delete()
+            return redirect('blog_list')
+        else:
+            form = CommentForm()
         context = {
-            'blog': blog
+            'blog': blog,
+            'comment_form': form,
+            'is_signed_in': request.user.is_authenticated,
+            'username': request.user.username,
+            'is_user_author': request.user.id == blog.author.id,
+            'delete_post_form': DeletePostForm(initial={'post_id':id})
         }
         return render(request, 'single_post/index.html', context)
     else:
         return HttpResponse(f"Could not find blog post with ID {id}")
         # TODO: return 404
+
+def comments(request, id):
+    blog = BlogPost.objects.get(pk=id)
+    if blog != None:
+        page = int(request.GET.get("page", 0))
+        return render(request, 'comments.html', get_comments_context(blog, page, request))
+    else:
+        return HttpResponse(f"Could not find blog post with ID {id}")
+        # TODO: return 404
+
+def get_comments_context(blog, page, request):
+    comments = blog.comments.order_by('-creation_date')[page*comments_per_page:(page+1)*comments_per_page]
+    return {
+        'blog': blog,
+        'page': page,
+        'comments': map(lambda comment: {
+            'comment': comment,
+            'form': DeleteCommentForm(initial={'comment_id': comment.id}),
+            'is_user_author': request.user.id == comment.author.id,
+        }, comments),
+        'are_newer_comments': page > 0,
+        'are_older_comments': blog.comments.count() > (page+1)*comments_per_page
+    }
+
+def delete_blog_post(request):
+    if request.method == "POST":
+        form = DeletePostForm(request.POST)
+        if form.is_valid():
+            try:
+                blog = BlogPost.objects.get(pk=form.cleaned_data['post_id'])
+                blog.delete()
+            except:
+                pass
+    return redirect('blog_list')
+
+def delete_comment(request):
+    if request.method == "POST":
+        form = DeleteCommentForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data['comment_id'])
+            try:
+                comment = Comment.objects.get(pk=form.cleaned_data['comment_id'])
+                comment.delete()
+                AppStream().update("comments.html", get_comments_context(comment.blog_post, 0, request), id="commentsframe")
+            except:
+                pass
+    return HttpResponse("")
 
 def login(request):
     if request.method == "POST":
@@ -85,7 +151,7 @@ def new_post(request):
                 title=form.cleaned_data['title'],
                 text=form.cleaned_data['text'],
                 author=request.user,
-                creation_date=date.today()
+                creation_date=datetime.datetime.now()
             )
             blogPost.save()
             return redirect('blog_list')
@@ -108,14 +174,13 @@ def get_filtered_blog_context(author_id, date, title, page):
         blog_query = blog_query.filter(author=author_id)
 
     if date != None:
-        print(date)
         try:
             date_val = datetime.datetime.strptime(date, '%Y%m%d').date()
             args += "&date=" + date
             print(date_val)
             blog_query = blog_query.filter(creation_date=date_val)
         except Exception as e:
-            print(str(e))
+            pass
 
     if title != None and title != "":
         args += "&title=" + title

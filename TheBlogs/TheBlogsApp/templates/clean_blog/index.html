@@ -48,9 +48,9 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li>
                         {% if is_signed_in %}
-                        <a href="logout">{{ username }}<br/>Log Out</a>
+                        <a href="/logout" target="_top">{{ username }}<br/>Log Out</a>
                         {% else %}
-                        <a href="login">Login</a>
+                        <a href="/login" target="_top">Login</a>
                         {% endif %}
                     </li>
                 </ul>
@@ -99,7 +99,7 @@
                 {% if is_signed_in %}
                 <ul class="pager">
                     <li>
-                        <a href="/new-post">New Post</a>
+                        <a href="/new-post" target="_top">New Post</a>
                     </li>
                 </ul>
                 {% endif %}
