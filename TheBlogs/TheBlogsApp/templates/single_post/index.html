@@ -107,7 +107,7 @@
             </div>
             <div class="row">
                 <p class="post-meta">
-                    {{ blog.text }}
+                    {{ blog.text|linebreaksbr }}
                 </p>
             </div>
         </div>
@@ -143,10 +143,14 @@
     <script src="https://unpkg.com/feather-icons"></script>
     <script>
         document.addEventListener("turbo:frame-render", function (e) {
+            // update feather-icon when the frame first renders
             feather.replace();
         });
         document.addEventListener("turbo:submit-end", function (e) {
-            feather.replace();
+            // update feather-icon when the frame is updated
+            // note: this is disabled because the csrf_token is
+            //      whiped by turbo when an update happens
+            //feather.replace();
         });
     </script>
 

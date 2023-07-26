@@ -1,0 +1,15 @@
+Code to go over:
+- My HTML code is modified from online templates (MIT License)
+- How filtering works: setting a filter updates the filtered blog post frame, but also adds the filter to the previous/next button url parameters
+- User login: using the built in Django user functionality for simplicity
+- Getting errors to pop up in the forms through the clean method
+
+Demo:
+- Login/logout
+- view blog post
+- comment on blog post
+- delete comment
+- create blog post
+- delete blog post
+- filter
+- change page

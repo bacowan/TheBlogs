@@ -126,12 +126,15 @@ def signup(request):
     if request.method == "POST":
         form = SignupForm(request.POST)
         if form.is_valid():
-            user = User.objects.create_user(
-                username=form.cleaned_data['username'],
-                password=form.cleaned_data['password'])
-            user.save()
-            django_login(request, user)
-            return redirect('blog_list')
+            try:
+                user = User.objects.create_user(
+                    username=form.cleaned_data['username'],
+                    password=form.cleaned_data['password'])
+                user.save()
+                django_login(request, user)
+                return redirect('blog_list')
+            except:
+                return HttpResponse("Failed to create user")
     else:
         form = SignupForm()
     
