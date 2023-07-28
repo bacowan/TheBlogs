@@ -1,6 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from django.db.models import Count
 
 class SigninForm(forms.Form):
     username = forms.CharField(label="Username", max_length=20, widget=forms.TextInput(attrs={"placeholder": "username"}))
@@ -25,8 +26,9 @@ class NewBlogPostForm(forms.Form):
     text = forms.CharField(label="Text", widget=forms.Textarea(attrs={"placeholder": "Input your blog post"}))
 
 class FilterForm(forms.Form):
+    all_authors = User.objects.all().annotate(num_posts=Count("blog_posts")).filter(num_posts__gt=0).order_by('username')
     author = forms.ChoiceField(
-            choices=[(-1, "")] + list(map(lambda user: (user.id, user.username), filter(lambda user : user.blog_posts.exists(), User.objects.all()))),
+            choices=[(-1, "")] + list(map(lambda user: (user.id, user.username), all_authors)),
             label="Author",
             required=False)
     date = forms.DateField(label="Date", required=False, widget=forms.SelectDateWidget())
